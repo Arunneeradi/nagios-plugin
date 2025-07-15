@@ -1,0 +1,189 @@
+Nagios can be installed in **two main ways**:
+
+✅ **From source (manual install)** – more control and used in production
+✅ **Using package manager (easier)** – faster but less customizable
+
+Here I’ll explain **both methods for Linux (CentOS/RHEL and Ubuntu/Debian)**.
+
+---
+
+## 🔥 Method 1: Install Nagios from Source (Recommended for Production)
+
+This installs the **Nagios Core** server and the web interface.
+
+### 🖥️ Steps for CentOS/RHEL 7/8
+
+1️⃣ Install required packages:
+
+```bash
+sudo yum install -y gcc glibc glibc-common wget unzip httpd php gd gd-devel perl postfix
+sudo yum install -y make net-snmp
+```
+
+2️⃣ Create a Nagios user and group:
+
+```bash
+sudo useradd nagios
+sudo groupadd nagcmd
+sudo usermod -aG nagcmd nagios
+sudo usermod -aG nagcmd apache
+```
+
+3️⃣ Download and install Nagios Core:
+
+```bash
+cd /tmp
+wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.5.1.tar.gz
+tar -zxvf nagios-4.5.1.tar.gz
+cd nagios-4.5.1
+./configure --with-command-group=nagcmd
+make all
+sudo make install
+sudo make install-init
+sudo make install-commandmode
+sudo make install-config
+sudo make install-webconf
+```
+
+4️⃣ Set Apache authentication:
+
+```bash
+sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+```
+
+Enter a password (you’ll use this to log in to Nagios).
+
+5️⃣ Enable and start services:
+
+```bash
+sudo systemctl enable httpd
+sudo systemctl start httpd
+sudo systemctl enable nagios
+sudo systemctl start nagios
+```
+
+6️⃣ Allow firewall:
+
+```bash
+sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --reload
+```
+
+7️⃣ Access Nagios in browser:
+
+```
+http://<your-server-ip>/nagios
+```
+
+Login with `nagiosadmin` and your password.
+
+---
+
+### 🖥️ Steps for Ubuntu/Debian
+
+1️⃣ Update and install dependencies:
+
+```bash
+sudo apt update
+sudo apt install -y apache2 php libapache2-mod-php build-essential libgd-dev unzip
+sudo apt install -y wget curl
+```
+
+2️⃣ Create Nagios user/group:
+
+```bash
+sudo useradd nagios
+sudo groupadd nagcmd
+sudo usermod -aG nagcmd nagios
+sudo usermod -aG nagcmd www-data
+```
+
+3️⃣ Download and install Nagios Core:
+
+```bash
+cd /tmp
+wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.5.1.tar.gz
+tar -zxvf nagios-4.5.1.tar.gz
+cd nagios-4.5.1
+./configure --with-command-group=nagcmd
+make all
+sudo make install
+sudo make install-init
+sudo make install-commandmode
+sudo make install-config
+sudo make install-webconf
+```
+
+4️⃣ Set up Apache user login:
+
+```bash
+sudo htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+```
+
+5️⃣ Enable modules and restart Apache:
+
+```bash
+sudo a2enmod rewrite cgi
+sudo systemctl restart apache2
+```
+
+6️⃣ Start Nagios:
+
+```bash
+sudo systemctl enable nagios
+sudo systemctl start nagios
+```
+
+7️⃣ Access Nagios:
+
+```
+http://<your-server-ip>/nagios
+```
+
+---
+
+## 🚀 Method 2: Install via Package Manager (Quick)
+
+### CentOS/RHEL:
+
+```bash
+sudo yum install -y epel-release
+sudo yum install -y nagios nagios-plugins-all nagios-plugins-nrpe nrpe httpd
+sudo systemctl enable --now nagios httpd
+```
+
+### Ubuntu/Debian:
+
+```bash
+sudo apt update
+sudo apt install -y nagios3 apache2
+```
+
+Access via:
+
+```
+http://<your-server-ip>/nagios3
+```
+
+---
+
+## ✅ After Installation
+
+* Add **hosts/services** to monitor in:
+
+  ```
+  /usr/local/nagios/etc/objects/hosts.cfg
+  /usr/local/nagios/etc/objects/services.cfg
+  ```
+* Restart Nagios after changes:
+
+  ```bash
+  sudo systemctl restart nagios
+  ```
+
+---
+
+Do you want me to:
+✅ Give you **a full script to install Nagios automatically**?
+✅ Or show **Nagios + NRPE setup (for monitoring Linux servers)**?
+✅ Or do both? Which Linux are you using – **RHEL/CentOS or Ubuntu/Debian**?

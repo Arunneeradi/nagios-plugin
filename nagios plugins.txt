@@ -1,0 +1,57 @@
+sudo yum install -y gcc glibc glibc-common wget unzip
+sudo yum install -y libgd-devel make net-snmp openssl-devel
+
+cd /tmp
+wget https://nagios-plugins.org/download/nagios-plugins-2.3.3.tar.gz
+tar zxvf nagios-plugins-2.3.3.tar.gz
+cd nagios-plugins-2.3.3
+```
+
+---
+
+### 2️⃣ Configure Without GD
+
+Since `libgd-devel` is missing and we only need basic plugins like `check_ping`, run:
+
+```bash
+./configure --with-nagios-user=nagios --with-nagios-group=nagios --without-gd
+```
+
+---
+
+### 3️⃣ Compile & Install
+
+```bash
+make
+sudo make install
+```
+
+This will place plugins (including `check_ping`) in:
+
+```
+/usr/local/nagios/libexec/
+```
+
+---
+
+### 4️⃣ Verify `check_ping`
+
+Check if the plugin exists:
+
+```bash
+ls /usr/local/nagios/libexec/check_ping
+```
+
+---
+
+### 5️⃣ Restart Nagios
+
+```bash
+sudo systemctl restart nagios
+```
+
+Then refresh the Nagios Web UI:
+
+```
+http://<server-ip>/nagios
+```
