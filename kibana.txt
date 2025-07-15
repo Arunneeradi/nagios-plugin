@@ -1,0 +1,103 @@
+Ah! Now I get your question clearly 👌
+
+You’re asking: **“How do I add a new server’s IP address into Kibana so I can monitor it?”**
+
+Here’s the straight answer 👇
+
+---
+
+## 🔥 How Kibana Monitors Servers
+
+Kibana **itself doesn’t directly connect to servers**.
+👉 It just **visualizes data stored in Elasticsearch**.
+
+To add a **new server (IP)** for monitoring, you need to:
+1️⃣ Install a data shipper (**Filebeat**, **Metricbeat**, etc.) on the new server.
+2️⃣ Configure it to send data to your Elasticsearch/Kibana.
+3️⃣ Once data flows, Kibana will show the new server in dashboards.
+
+---
+
+## ✅ Steps to Add a New IP/Server in Kibana
+
+### 1️⃣ On the New Server (192.168.x.x)
+
+Install a Beat (example: Metricbeat for system metrics):
+
+```bash
+# On Ubuntu/Debian
+sudo apt install metricbeat
+
+# On RHEL/CentOS/Amazon Linux
+sudo yum install metricbeat
+```
+
+---
+
+### 2️⃣ Configure Metricbeat to Send Data
+
+Edit Metricbeat config:
+
+```bash
+sudo nano /etc/metricbeat/metricbeat.yml
+```
+
+Set your **Elasticsearch/Kibana IP**:
+
+```yaml
+output.elasticsearch:
+  hosts: ["<kibana-server-ip>:9200"]
+
+setup.kibana:
+  host: "<kibana-server-ip>:5601"
+```
+
+Save and start Metricbeat:
+
+```bash
+sudo systemctl enable --now metricbeat
+```
+
+---
+
+### 3️⃣ Check in Kibana
+
+Go to:
+
+```
+Kibana → Observability → Metrics → Hosts
+```
+
+You should see the **new server IP (192.168.x.x)** appear there.
+
+---
+
+### 📊 What Gets Monitored?
+
+* CPU, Memory, Disk, Network
+* Log files (if you install Filebeat)
+* Custom app metrics (if needed)
+
+---
+
+## ✅ Optional: Add to Dashboard
+
+You can now create or edit dashboards to include the new server’s IP.
+
+---
+
+## ⚡ Quick Recap
+
+| Step             | Action                        |
+| ---------------- | ----------------------------- |
+| Install Beat     | Metricbeat/Filebeat on new IP |
+| Configure Output | Point to your Elasticsearch   |
+| Start Beat       | Enable and start service      |
+| View in Kibana   | Metrics > Hosts Dashboard     |
+
+---
+
+Do you want me to:
+✅ Give you a **ready-made Metricbeat config for your Kibana IP**?
+✅ Or a **script to install & configure beats on the new server automatically**?
+✅ Or both?
