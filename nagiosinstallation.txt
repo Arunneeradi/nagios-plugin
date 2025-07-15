@@ -183,7 +183,3 @@ http://<your-server-ip>/nagios3
 
 ---
 
-Do you want me to:
-✅ Give you **a full script to install Nagios automatically**?
-✅ Or show **Nagios + NRPE setup (for monitoring Linux servers)**?
-✅ Or do both? Which Linux are you using – **RHEL/CentOS or Ubuntu/Debian**?
